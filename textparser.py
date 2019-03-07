@@ -60,10 +60,32 @@ class TextParser(object):
         updated to match this.
         """
         tmp = []
+        learned_words_set = set(learned_words)
         query_results = TextParser.for_each_trim_to_first(query_results)
         for note in query_results:
             if note.split("\t")[0].split("\x1f")[4].split(", ") == ['']:
                 continue
-            if set(note.split("\t")[0].split("\x1f")[4].split(", ")).issubset(learned_words):
+            current_vocabs = set(note.split("\t")[0].split("\x1f")[4].split(", "))
+            if current_vocabs.issubset(learned_words_set):
                 tmp.append(note.split("\t")[0].split("\x1f")[1])
+        return TextParser.all_elements_string_to_int(tmp)
+
+    @staticmethod
+    def all_elements_string_to_int(lst):
+        """
+        Convert every element in a list into an integer from a string
+        """
+        tmp = []
+        for e in lst:
+            tmp.append(int(e))
+        return tmp
+
+    @staticmethod
+    def all_elements_int_to_string(lst):
+        """
+        Convert every element in a list into a string from an integer
+        """
+        tmp = []
+        for e in lst:
+            tmp.append(str(e))
         return tmp
