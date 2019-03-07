@@ -62,12 +62,9 @@ class TextParser(object):
         tmp = []
         query_results = TextParser.for_each_trim_to_first(query_results)
         for note in query_results:
-            this_cards_words = set(note.split("\t")[0].split("\x1f")[4].split(", "))
-            if this_cards_words.issubset(learned_words):
+            if note.split("\t")[0].split("\x1f")[4].split(", ") == ['']:
+                continue
+            if set(note.split("\t")[0].split("\x1f")[4].split(", ")).issubset(learned_words):
+                tmp.append(note.split("\t")[0].split("\x1f")[1])
                 print(note.split("\t")[0].split("\x1f")[1])
-            #print(set(note.split("\t")[0].split("\x1f")[4].split(", ")))
-            #if note.split("\t")[0].split("\x1f")[4].split(", ") == ['']:
-            #    continue
-            #if set(note.split("\t")[0].split("\x1f")[4].split(", ")).issubset(learned_words):
-            #    tmp.append(note.split("\t")[0].split("\x1f")[1])
         return tmp
