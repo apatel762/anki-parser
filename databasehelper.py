@@ -6,29 +6,26 @@ class DatabaseHelper(object):
     a database
     """
     @staticmethod
-    def execute(db_path, query):
+    def execute(query):
         """
         A helper method for running queries and keeping the main code clean.
 
-        :param db_path: The full filepath to a database
         :param query: The query to run
         :returns: The result of the query.
         """
-        if db_path is None:
-            return RuntimeError("The given database filepath is empty.")
         if query is None:
             return RuntimeError("The given query is empty.")
 
         if DatabaseHelper.__first_word(query) == "select":
-            return DatabaseHelper.__execute_select_query(db_path, query)
+            return DatabaseHelper.__execute_select_query(query)
         elif DatabaseHelper.__first_word(query) == "update":
-            return DatabaseHelper.__execute_update_query(db_path, query)
+            return DatabaseHelper.__execute_update_query(query)
         else:
             raise RuntimeError(f'Please check the query syntax for: {query}')
 
     @staticmethod
-    def __execute_select_query(db_path, query):
-        conn = sqlite3.connect(db_path)
+    def __execute_select_query(query):
+        conn = sqlite3.connect(DatabaseHelper.__get_database_filepath())
         try:
             c = conn.cursor()
             c.execute(query)
@@ -39,8 +36,8 @@ class DatabaseHelper(object):
             conn.close()
 
     @staticmethod
-    def __execute_update_query(db_path, query):
-        conn = sqlite3.connect(db_path)
+    def __execute_update_query(query):
+        conn = sqlite3.connect(DatabaseHelper.__get_database_filepath())
         try:
             c = conn.cursor()
             c.execute(query)
@@ -55,14 +52,18 @@ class DatabaseHelper(object):
     def __first_word(query):
         return query.split()[0].lower()
 
+    @staticmethod
+    def __get_database_filepath():
+        with open("db-location.txt", 'r') as f:
+            return f.readlines()[0]
+
     def test():
-        db_path = 'C:\\Users\\Arjun Patel\\AppData\\Roaming\\Anki2\\Arjun\\collection.anki2'
         query = 'select n.flds '
         query += 'from cards c '
         query += 'join notes n on c.nid = n.id '
         query += 'where c.type = 2 '
         query += 'and c.did = 1543218842369'
-        for row in DatabaseHelper.execute(db_path, query):
+        for row in DatabaseHelper.execute(query):
             print(row[0].split("\x1f")[4])
 
 if __name__ == '__main__':
