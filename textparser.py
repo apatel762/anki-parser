@@ -66,5 +66,4 @@ class TextParser(object):
                 continue
             if set(note.split("\t")[0].split("\x1f")[4].split(", ")).issubset(learned_words):
                 tmp.append(note.split("\t")[0].split("\x1f")[1])
-                print(note.split("\t")[0].split("\x1f")[1])
         return tmp
