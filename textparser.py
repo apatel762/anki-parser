@@ -33,3 +33,43 @@ class TextParser(object):
                 v = v[5:]
             usable_vocab.append(v)
         return usable_vocab
+
+    @staticmethod
+    def for_each_trim_to_first(query_results):
+        """
+        The query which gets the sort field (IDs) (of all the sentence
+        cards that you haven't learned) returns them in a strange format
+        where every element in the results list is a tuple with one element.
+        This gets the first element from each tuple and puts it in a list
+        and returns that.
+        """
+        tmp = []
+        for e in query_results:
+            tmp.append(e[0])
+        return tmp
+
+    @staticmethod
+    def for_each_get_doable_ids(query_results):
+        """
+        The query which gets all of the sentence card vocabulary literally
+        just returns all of the content on the card. This function will parse
+        that raw data and get all of the card IDs that correspond to the
+        card IDs that haven't been studied, but are doable given my current
+        knowledge.
+        It then returns a list of ids that can have their respective cards
+        updated to match this.
+        """
+        return TextParser.for_each_trim_to_first(query_results)
+        #tmp = []
+        #query_results = TextParser.for_each_trim_to_first(query_results)
+
+        #for note in query_results:
+            #if note.split("\t")[0].split("\x1f")[4] == "":
+            #    continue
+            #else:
+            #    tmp.append(note.split("\t")[0].split("\x1f")[4])
+            #if note.split("\t")[4].split(", ") == ['']:
+            #    continue
+            #if set(note.split("\t")[4].split(", ")).issubset(studied_vocab):
+            #    id_lst.append(note.split("\t")[1])
+        #return tmp
