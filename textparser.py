@@ -49,7 +49,7 @@ class TextParser(object):
         return tmp
 
     @staticmethod
-    def for_each_get_doable_ids(query_results):
+    def for_each_get_doable_ids(query_results, learned_words):
         """
         The query which gets all of the sentence card vocabulary literally
         just returns all of the content on the card. This function will parse
@@ -59,17 +59,15 @@ class TextParser(object):
         It then returns a list of ids that can have their respective cards
         updated to match this.
         """
-        return TextParser.for_each_trim_to_first(query_results)
-        #tmp = []
-        #query_results = TextParser.for_each_trim_to_first(query_results)
-
-        #for note in query_results:
-            #if note.split("\t")[0].split("\x1f")[4] == "":
+        tmp = []
+        query_results = TextParser.for_each_trim_to_first(query_results)
+        for note in query_results:
+            this_cards_words = set(note.split("\t")[0].split("\x1f")[4].split(", "))
+            if this_cards_words.issubset(learned_words):
+                print(note.split("\t")[0].split("\x1f")[1])
+            #print(set(note.split("\t")[0].split("\x1f")[4].split(", ")))
+            #if note.split("\t")[0].split("\x1f")[4].split(", ") == ['']:
             #    continue
-            #else:
-            #    tmp.append(note.split("\t")[0].split("\x1f")[4])
-            #if note.split("\t")[4].split(", ") == ['']:
-            #    continue
-            #if set(note.split("\t")[4].split(", ")).issubset(studied_vocab):
-            #    id_lst.append(note.split("\t")[1])
-        #return tmp
+            #if set(note.split("\t")[0].split("\x1f")[4].split(", ")).issubset(learned_words):
+            #    tmp.append(note.split("\t")[0].split("\x1f")[1])
+        return tmp
