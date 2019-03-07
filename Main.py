@@ -22,6 +22,7 @@ order by n.sfld
 Make sure to do both of the above steps before running the code in 
 this file!
 '''
+import DatabaseHelper
 
 def extract_cards_to_study_main():
     '''
@@ -114,6 +115,13 @@ def validate_vocab(v):
         v = v[5:]
     return v
 
+def get_database_filepath():
+    with open("db-location.txt", 'r') as f:
+        return f.readlines()[0]
+
 if __name__ == '__main__':
-    get_vocab_main()
-    extract_cards_to_study_main()
+    #get_vocab_main()
+    #extract_cards_to_study_main()
+    print(get_database_filepath())
+    db = DatabaseHelper()
+    db.test()
