@@ -16,61 +16,76 @@ this file!
 from databasehelper import DatabaseHelper
 from textparser import TextParser
 
-def extract_cards_to_study_main():
+def update_cards_to_study_in_database(learned_words):
+    """
+    First runs a query to get the sort field (id) of the sentences
+    that you haven't learned. It then filters this down using the 
+    previously obtained list of vocab that you HAVE learned, and
+    returns a query that can be run to update all of the cards that
+    you can now learn.
+    """
+    card_ids = __get_unstudied_sentence_card_ids()
+    sentence_vocab = __get_all_doable_sentence_card_vocabulary(card_ids)
+
+    print(sentence_vocab)
+
+    #id_lst = []
+    #with open("japanese.txt", 'r', encoding='utf-8') as f:
+    #    for line in f.readlines():
+    #        if line.split("\t")[4].split(", ") == ['']:
+    #            continue
+    #        if set(line.split("\t")[4].split(", ")).issubset(studied_vocab):
+    #            id_lst.append(line.split("\t")[1])
+
+    #unlearned_ids = []
+    #with open("unlearned_vocab.txt", 'r', encoding='utf-8') as f:
+    #    for line in f.readlines():
+    #        unlearned_ids.append(line)
+
+    #unlearned_ids = "\n".join(unlearned_ids).split("\n")[::2]
+
+    #final_id_lst = []
+    #for n in id_lst:
+    #    if n in unlearned_ids:
+    #        final_id_lst.append(n)
+
     '''
     Gets all of the Sort ID's for the cards that contain
     only the vocabulary that you have learned. Then it 
     generates a query which will update all of the cards
     that you need to learn by un-suspending them and setting
     them to 'New'. The query is as follows:
-    update cards
-    set queue = 0, type = 0
-    where nid in
-    (
-    select id
-    from notes
-    where sfld in (x,y,z)
-    )
-    and did = 1547537208241
     '''
-    studied_vocab = []
-    with open("learned_vocab_parsed.txt", 'r', encoding='utf-8') as f:
-        for line in f.readlines():
-            studied_vocab.append(line)
+    #output = "update cards\n"
+    #output += "set queue = 0, type = 0\n"
+    #output += "where nid in \n"
+    #output += "(\n"
+    #output += "select id \n"
+    #output += "from notes \n"
+    #output += "where sfld in (" + ", ".join(final_id_lst) + ")\n"
+    #output += ")\n"
+    #output += "and did = 1547537208241"
 
-    studied_vocab = "\n".join(studied_vocab).split("\n")[::2]
+    #print(output)
 
-    id_lst = []
-    with open("japanese.txt", 'r', encoding='utf-8') as f:
-        for line in f.readlines():
-            if line.split("\t")[4].split(", ") == ['']:
-                continue
-            if set(line.split("\t")[4].split(", ")).issubset(studied_vocab):
-                id_lst.append(line.split("\t")[1])
+def __get_unstudied_sentence_card_ids():
+    query = "select n.sfld "
+    query += "from cards c "
+    query += "join notes n on c.nid = n.id "
+    query += "where c.type = 0 "
+    query += "and c.queue = -1 "
+    query += "and c.did = 1547537208241 "
+    query += "order by n.sfld"
+    return TextParser.for_each_trim_to_first(DatabaseHelper.execute(query))
 
-    unlearned_ids = []
-    with open("unlearned_vocab.txt", 'r', encoding='utf-8') as f:
-        for line in f.readlines():
-            unlearned_ids.append(line)
-
-    unlearned_ids = "\n".join(unlearned_ids).split("\n")[::2]
-
-    final_id_lst = []
-    for n in id_lst:
-        if n in unlearned_ids:
-            final_id_lst.append(n)
-
-    output = "update cards\n"
-    output += "set queue = 0, type = 0\n"
-    output += "where nid in \n"
-    output += "(\n"
-    output += "select id \n"
-    output += "from notes \n"
-    output += "where sfld in (" + ", ".join(final_id_lst) + ")\n"
-    output += ")\n"
-    output += "and did = 1547537208241"
-
-    print(output)
+def __get_all_doable_sentence_card_vocabulary(card_ids):
+    query = "select n.flds "
+    query += "from cards c "
+    query += "join notes n on c.nid = n.id "
+    query += "where c.did = 1547537208241 "
+    query += "order by n.sfld"
+    query_results = DatabaseHelper.execute(query)
+    return TextParser.for_each_get_doable_ids(query_results, card_ids)
 
 def get_learned_rtk_kanji():
     '''
@@ -82,15 +97,10 @@ def get_learned_rtk_kanji():
     query += "join notes n on c.nid = n.id "
     query += "where c.type = 2 "
     query += "and c.did = 1543218842369"
-    vocab = DatabaseHelper.execute(__get_database_filepath(), query)
+    vocab = DatabaseHelper.execute(query)
+
     return TextParser.kanji_deck_only_main_vocab_word(vocab)
 
-def __get_database_filepath():
-    with open("db-location.txt", 'r') as f:
-        return f.readlines()[0]
-
 if __name__ == '__main__':
-    #get_learned_rtk_kanji()
-    #extract_cards_to_study_main()
-    for vocab in get_learned_rtk_kanji():
-        print(vocab)
+    learned_words = get_learned_rtk_kanji()
+    update_cards_to_study_in_database(learned_words)
