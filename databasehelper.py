@@ -5,9 +5,6 @@ class DatabaseHelper(object):
     A class containing methods that can be used to safely interface with
     a database
     """
-    def __init__(self):
-        pass
-
     @staticmethod
     def execute(db_path, query):
         """
