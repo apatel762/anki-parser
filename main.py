@@ -32,30 +32,13 @@ def update_cards_to_study_in_database(learned_words):
         if c_id in card_ids:
             doable_new_cards_ids.append(c_id)
 
-    #print(doable_sntnce_ids)
-    #print(card_ids)
-    #print(doable_new_cards_ids)
+    if not doable_new_cards_ids:
+        print("There are no doable new cards to unsuspend. Have fun!")
+        return
+    else:
+        __update_database_unsuspend_doable_cards(doable_new_cards_ids)
 
-    #id_lst = []
-    #with open("japanese.txt", 'r', encoding='utf-8') as f:
-    #    for line in f.readlines():
-    #        if line.split("\t")[4].split(", ") == ['']:
-    #            continue
-    #        if set(line.split("\t")[4].split(", ")).issubset(studied_vocab):
-    #            id_lst.append(line.split("\t")[1])
-
-    #unlearned_ids = []
-    #with open("unlearned_vocab.txt", 'r', encoding='utf-8') as f:
-    #    for line in f.readlines():
-    #        unlearned_ids.append(line)
-
-    #unlearned_ids = "\n".join(unlearned_ids).split("\n")[::2]
-
-    #final_id_lst = []
-    #for n in id_lst:
-    #    if n in unlearned_ids:
-    #        final_id_lst.append(n)
-
+def __update_database_unsuspend_doable_cards(final_id_lst):
     '''
     Gets all of the Sort ID's for the cards that contain
     only the vocabulary that you have learned. Then it 
@@ -63,17 +46,17 @@ def update_cards_to_study_in_database(learned_words):
     that you need to learn by un-suspending them and setting
     them to 'New'. The query is as follows:
     '''
-    #output = "update cards\n"
-    #output += "set queue = 0, type = 0\n"
-    #output += "where nid in \n"
-    #output += "(\n"
-    #output += "select id \n"
-    #output += "from notes \n"
-    #output += "where sfld in (" + ", ".join(final_id_lst) + ")\n"
-    #output += ")\n"
-    #output += "and did = 1547537208241"
-
-    #print(output)
+    query = "update cards "
+    query += "set queue = 0, type = 0 "
+    query += "where nid in  "
+    query += "( "
+    query += "select id  "
+    query += "from notes  "
+    query += "where sfld in (" + ", ".join(final_id_lst) + ") "
+    query += ") "
+    query += "and did = 1547537208241"
+    DatabaseHelper.execute(query)
+    print(f"Database unsuspended {len(final_id_lst)} new cards")
 
 def __get_unstudied_sentence_card_ids():
     query = "select n.sfld "
