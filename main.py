@@ -25,9 +25,16 @@ def update_cards_to_study_in_database(learned_words):
     you can now learn.
     """
     card_ids = __get_unstudied_sentence_card_ids()
-    sentence_vocab = __get_all_doable_sentence_card_vocabulary(card_ids)
+    doable_sntnce_ids = __get_all_doable_sentence_card_vocabulary(learned_words)
 
-    print(sentence_vocab)
+    doable_new_cards_ids = []
+    for c_id in doable_sntnce_ids:
+        if c_id in card_ids:
+            doable_new_cards_ids.append(c_id)
+
+    #print(doable_sntnce_ids)
+    #print(card_ids)
+    #print(doable_new_cards_ids)
 
     #id_lst = []
     #with open("japanese.txt", 'r', encoding='utf-8') as f:
@@ -78,14 +85,14 @@ def __get_unstudied_sentence_card_ids():
     query += "order by n.sfld"
     return TextParser.for_each_trim_to_first(DatabaseHelper.execute(query))
 
-def __get_all_doable_sentence_card_vocabulary(card_ids):
+def __get_all_doable_sentence_card_vocabulary(learned_words):
     query = "select n.flds "
     query += "from cards c "
     query += "join notes n on c.nid = n.id "
     query += "where c.did = 1547537208241 "
     query += "order by n.sfld"
     query_results = DatabaseHelper.execute(query)
-    return TextParser.for_each_get_doable_ids(query_results, card_ids)
+    return TextParser.for_each_get_doable_ids(query_results, learned_words)
 
 def get_learned_rtk_kanji():
     '''
