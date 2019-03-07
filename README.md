@@ -10,7 +10,7 @@ My learning workflow involves learning some words from the Vocab deck and then u
 The Python script will automate the process of searching the Anki cards database (using a much higher level of precision than is possible through the UI) and look for cards that I can 'unlock'. It will then use a SQL query to unlock all of the relevant cards at once, so I don't have to sit there and do it myself.
 
 ## The files
-`main.py` - The main script. This must be run directly.
-`db-location.txt` - A text file which only has one line. That one line is the full filepath of my Anki card database.
-`databasehelper.py` - Contains a static python class with some helper methods for running database queries. Helps keep my `main.py` code clean.
-`textparser.py` - Contains a static python class with various helpful functions for parsing data, and handling lots of stuff in text format. Again, it's nice to put that parsing code in here to keep the main file clean.
+- `main.py` - The main script. This must be run directly.
+- `db-location.txt` - A text file which only has one line. That one line is the full filepath of my Anki card database.
+- `databasehelper.py` - Contains a static python class with some helper methods for running database queries. Helps keep my `main.py` code clean.
+- `textparser.py` - Contains a static python class with various helpful functions for parsing data, and handling lots of stuff in text format. Again, it's nice to put that parsing code in here to keep the main file clean.
