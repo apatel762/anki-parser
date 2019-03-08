@@ -56,15 +56,3 @@ class DatabaseHelper(object):
     def __get_database_filepath():
         with open("db-location.txt", 'r') as f:
             return f.readlines()[0]
-
-    def test():
-        query = 'select n.flds '
-        query += 'from cards c '
-        query += 'join notes n on c.nid = n.id '
-        query += 'where c.type = 2 '
-        query += 'and c.did = 1543218842369'
-        for row in DatabaseHelper.execute(query):
-            print(row[0].split("\x1f")[4])
-
-if __name__ == '__main__':
-    DatabaseHelper.test()
