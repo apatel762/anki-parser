@@ -9,19 +9,16 @@ def update_cards_to_study_in_database(learned_words):
     returns a query that can be run to update all of the cards that
     you can now learn.
     """
-    suspended_card_ids = __get_unstudied_sentence_card_ids()
-    doable_sntnce_ids = __get_all_doable_sentence_card_vocabulary(learned_words)
+    suspended = __get_unstudied_sentence_card_ids()
+    doable_cards = __get_all_doable_sentence_card_vocabulary(learned_words)
 
-    doable_new_cards_ids = []
-    for c_id in doable_sntnce_ids:
-        if c_id in suspended_card_ids:
-            doable_new_cards_ids.append(c_id)
+    doable_ids = [c for c in doable_cards if c in suspended]
 
-    if not doable_new_cards_ids:
+    if not doable_ids:
         print("There are no doable new cards to unsuspend. Have fun!")
         return
     else:
-        id_lst = ", ".join(TextParser.all_elements_int_to_string(doable_new_cards_ids))
+        id_lst = ", ".join(TextParser.all_elements_int_to_string(doable_ids))
         __update_database_unsuspend_doable_cards(id_lst)
 
 def __update_database_unsuspend_doable_cards(final_id_lst):
@@ -42,9 +39,7 @@ def __update_database_unsuspend_doable_cards(final_id_lst):
     query += ") "
     query += "and did = 1547537208241"
     DatabaseHelper.execute(query)
-    num_of_cards = len(TextParser.all_elements_string_to_int(final_id_lst))
-    print(f"Unsuspended {len(final_id_lst)} new cards in database.")
-    print(f"These are the card IDs:\n{final_id_lst}")
+    print(f"The following sentence cards were unsuspended:\n{final_id_lst}")
 
 def __get_unstudied_sentence_card_ids():
     # Get the IDs of the sentence cards that I haven't yet studied

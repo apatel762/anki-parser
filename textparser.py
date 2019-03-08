@@ -11,9 +11,7 @@ class TextParser(object):
         information from those flashcards, returning only the first
         vocabulary word learned from the card and nothing else.
         """
-        tmp = []
-        for note_data in lst:
-            tmp.append(note_data[0].split("\x1f")[4])
+        tmp = [note_data[0].split("\x1f")[4] for note_data in lst]
         return TextParser.__get_usable_vocab(tmp)
 
     @staticmethod
@@ -25,14 +23,17 @@ class TextParser(object):
         word is kept (since this is the important one for searching
         the sentence deck)
         """
-        usable_vocab = []
-        for v in lst:
-            if ", " in v:
-                v = v.split(", ")[0]
-            if "<div>" in v:
-                v = v[5:]
-            usable_vocab.append(v)
-        return usable_vocab
+        return [TextParser.__get_usable_vocab_trim(v) for v in lst]
+
+    @staticmethod
+    def __get_usable_vocab_trim(v):
+        if ", " in v:
+            return v.split(", ")[0]
+        elif "<div>" in v:
+            return v[5:]
+        else:
+            return v
+
 
     @staticmethod
     def for_each_trim_to_first(query_results):
@@ -43,10 +44,7 @@ class TextParser(object):
         This gets the first element from each tuple and puts it in a list
         and returns that.
         """
-        tmp = []
-        for e in query_results:
-            tmp.append(e[0])
-        return tmp
+        return [e[0] for e in query_results]
 
     @staticmethod
     def for_each_get_doable_ids(query_results, learned_words):
@@ -75,17 +73,11 @@ class TextParser(object):
         """
         Convert every element in a list into an integer from a string
         """
-        tmp = []
-        for e in lst:
-            tmp.append(int(e))
-        return tmp
+        return [int(e) for e in lst]
 
     @staticmethod
     def all_elements_int_to_string(lst):
         """
         Convert every element in a list into a string from an integer
         """
-        tmp = []
-        for e in lst:
-            tmp.append(str(e))
-        return tmp
+        return [str(e) for e in lst]
