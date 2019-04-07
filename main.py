@@ -42,12 +42,14 @@ def __update_database_unsuspend_doable_cards(final_id_lst):
     print(f"The following sentence cards were unsuspended:\n{final_id_lst}")
 
 def __get_unstudied_sentence_card_ids():
-    # Get the IDs of the sentence cards that I haven't yet studied
+    # Get IDs of sentence cards that I haven't yet studied (i.e. susp. cards)
     query = "select n.sfld "
     query += "from cards c "
     query += "join notes n on c.nid = n.id "
-    query += "where c.type = 0 "
-    query += "and c.queue = -1 "
+    # Commented code restricts selection of suspended cards to 'type = new'
+    #query += "where c.type in 0 "
+    #query += "and c.queue = -1 "
+    query += "where c.queue = -1 "
     query += "and c.did = 1547537208241 "
     query += "order by n.sfld"
     return TextParser.for_each_trim_to_first(DatabaseHelper.execute(query))
@@ -71,7 +73,7 @@ def get_learned_rtk_kanji():
     query += "from cards c "
     query += "join notes n on c.nid = n.id "
     query += "where c.type in (1,2) "
-    query += "and c.did = 1543218842369"
+    query += "and c.did = 1554632049429"
     vocab = DatabaseHelper.execute(query)
     return TextParser.kanji_deck_only_main_vocab_word(vocab)
 
