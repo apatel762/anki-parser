@@ -46,7 +46,7 @@ def __get_unstudied_sentence_card_ids():
     query = "select n.sfld "
     query += "from cards c "
     query += "join notes n on c.nid = n.id "
-    query += "where c.type in 0 "
+    query += "where c.type = 0 "
     query += "and c.queue = -1 "
     query += "and c.did = 1547537208241 "
     query += "order by n.sfld"
