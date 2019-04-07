@@ -11,7 +11,7 @@ class TextParser(object):
         information from those flashcards, returning only the first
         vocabulary word learned from the card and nothing else.
         """
-        tmp = [note_data[0].split("\x1f")[4] for note_data in lst]
+        tmp = [note_data[0].split("\x1f")[1] for note_data in lst]
         return TextParser.__get_usable_vocab(tmp)
 
     @staticmethod
