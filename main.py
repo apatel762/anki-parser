@@ -1,7 +1,8 @@
 from databasehelper import DatabaseHelper
 from textparser import TextParser
 
-def update_cards_to_study_in_database(learned_words):
+
+def update_cards_to_study_in_database(learned_words_list):
     """
     First runs a query to get the sort field (id) of the sentences
     that you haven't learned. It then filters this down using the 
@@ -10,7 +11,7 @@ def update_cards_to_study_in_database(learned_words):
     you can now learn.
     """
     suspended = __get_unstudied_sentence_card_ids()
-    doable_cards = __get_all_doable_sentence_card_vocabulary(learned_words)
+    doable_cards = __get_all_doable_sentence_card_vocab(learned_words_list)
 
     doable_ids = [c for c in doable_cards if c in suspended]
 
@@ -21,14 +22,16 @@ def update_cards_to_study_in_database(learned_words):
         id_lst = ", ".join(TextParser.all_elements_int_to_string(doable_ids))
         __update_database_unsuspend_doable_cards(id_lst)
 
+
 def __update_database_unsuspend_doable_cards(final_id_lst):
-    '''
+    """
     Gets all of the Sort ID's for the cards that contain
-    only the vocabulary that you have learned. Then it 
+    only the vocabulary that you have learned. Then it
     generates a query which will update all of the cards
     that you need to learn by un-suspending them and setting
     them to 'New'. The query is as follows:
-    '''
+    :type final_id_lst: str
+    """
     query = "update cards "
     query += "set queue = 0, type = 0 "
     query += "where nid in  "
@@ -41,6 +44,7 @@ def __update_database_unsuspend_doable_cards(final_id_lst):
     DatabaseHelper.execute(query)
     print(f"The following sentence cards were unsuspended:\n{final_id_lst}")
 
+
 def __get_unstudied_sentence_card_ids():
     # Get IDs of sentence cards that are new and suspended (haven't studied)
     query = "select n.sfld "
@@ -52,7 +56,8 @@ def __get_unstudied_sentence_card_ids():
     query += "order by n.sfld"
     return TextParser.for_each_trim_to_first(DatabaseHelper.execute(query))
 
-def __get_all_doable_sentence_card_vocabulary(learned_words):
+
+def __get_all_doable_sentence_card_vocab(learned_words):
     # Get literally all of the card info in the sentences deck
     query = "select n.flds "
     query += "from cards c "
@@ -62,11 +67,12 @@ def __get_all_doable_sentence_card_vocabulary(learned_words):
     query_results = DatabaseHelper.execute(query)
     return TextParser.for_each_get_doable_ids(query_results, learned_words)
 
+
 def get_learned_rtk_kanji():
-    '''
+    """
     This method will return all of the words that you have learned from the
     RTK kanji deck as a list, using the below query.
-    '''
+    """
     query = "select n.flds "
     query += "from cards c "
     query += "join notes n on c.nid = n.id "
@@ -74,6 +80,7 @@ def get_learned_rtk_kanji():
     query += "and c.did = 1554632049429"
     vocab = DatabaseHelper.execute(query)
     return TextParser.kanji_deck_only_main_vocab_word(vocab)
+
 
 if __name__ == '__main__':
     learned_words = get_learned_rtk_kanji()

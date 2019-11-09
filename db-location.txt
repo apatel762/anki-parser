@@ -1,1 +1,1 @@
-C:\Users\Arjun Patel\AppData\Roaming\Anki2\Arjun\collection.anki2
+/home/arjun/.local/share/Anki2/User 1/collection.anki2
