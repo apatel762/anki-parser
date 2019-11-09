@@ -1,10 +1,12 @@
 import sqlite3
 
+
 class DatabaseHelper(object):
     """
     A class containing methods that can be used to safely interface with
     a database
     """
+
     @staticmethod
     def execute(query):
         """
@@ -54,5 +56,6 @@ class DatabaseHelper(object):
 
     @staticmethod
     def __get_database_filepath():
-        with open("db-location.txt", 'r') as f:
-            return f.readlines()[0]
+        with open("db-location.txt", 'r') as file:
+            filepath = file.readlines()[0]
+            return filepath.rstrip("\n")
